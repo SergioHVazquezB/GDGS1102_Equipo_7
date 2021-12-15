@@ -16,13 +16,8 @@ const CACHE_FILES_INMUTABLE = [
     'https://code.getmdl.io/1.3.0/material.min.js',
     'https://fonts.gstatic.com/s/roboto/v20/KFOmCnqEu92Fr1Mu4mxK.woff2',
     'https://fonts.gstatic.com/s/materialicons/v118/flUhRq6tzZclQEJ-Vdg-IuiaDsNcIhQ8tQ.woff2',
-    'https://unpkg.com/pwacompat',
-    'src/images/icons/icon-144x144.png',
-    'src/images/computer.jpg',
-    'src/css/app.css',
-    'src/js/app.js',
-    'index.html',
-    '/'
+    'https://unpkg.com/pwacompat'
+
 ];
 
 self.addEventListener('install', (event) => { // Instala ServisWorker cuando usuario entra <INSTALL>.
