@@ -30,7 +30,7 @@ const sendData = async (e) => {
                 title: TITLE,
                 description: DESCRIPTION,
                 timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            }); 
+            });
             const data = {
                 message: 'Registro exitosamente almacenado',
                 timeout: 5000
@@ -50,6 +50,41 @@ const sendData = async (e) => {
         };
         Message('error').MaterialSnackbar.showSnackbar(data);
     }
+};
+//
+const requestPermission = async () => {
+    const result = await Notification.requestPermission();
+    if (result !== 'granted') {
+        const data = {
+            message: 'El usuario no activo las notificaciones',
+            timeout: 5000
+        };
+        Message('error').MaterialSnackbar.showSnackbar(data);
+    } else {
+        //configuracionSubscripcion();
+         showNotification();
+    }
+};
+const showNotification = () => {
+    // new Notification('Notificaciones exitosamente activadas');
+    navigator.serviceWorker.getRegistration()
+        .then(instancia => {
+            instancia.showNotification('Notificaciones exitosamente activadas para el dispositivo', {
+                body: 'El cuerpo de la notificacion',
+                icon: 'src/images/icons/icon-144x144.png',
+                image: 'src/images/computer.jpg',
+                badge: 'src/images/icons/icon-144x144.png',
+                dir: 'ltr',
+                tag: 'notification-postme',
+                requireInteraction: true,
+                vibrate: [100, 50, 200],
+                actions: [
+                    { action: 'confirm', title: 'Aceptar', icon: 'src/images/icons/icon-144x144.png' },
+                    { action: 'cancel', title: 'Cancelar', icon: 'src/images/icons/icon-144x144.png' }
+                ]
+            });
+        })
+        .catch(err => console.error(err.message))
 };
 //interrumpe modal de instalacion
 window.addEventListener('beforeinstallprompt', (e) => {
@@ -86,6 +121,9 @@ window.addEventListener('load', async () => {
     window.Loading = (option = 'block') => {
         document.querySelector('#loading').style.display = option;
     };
+    // Seccion notificaciones
+    BTN_NOTIFICATIONS = document.querySelector('#notifications-install');
+    BTN_NOTIFICATIONS.addEventListener('click', requestPermission);
     //Boton anviar post.
     const btnPostSubmit = document.querySelector('#btn-post-submit');
     btnPostSubmit.addEventListener('click', (e) => sendData(e));

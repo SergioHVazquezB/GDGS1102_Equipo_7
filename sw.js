@@ -88,3 +88,19 @@ self.addEventListener('push', (event) => {//Controla eventos de notificaciones <
 
 
 });
+self.addEventListener('notificationclick', (event) => {//Controla notificacion
+    const notification = event.notification;
+    const action = event.action;
+    console.log(action);
+    if (action === 'confirm') {
+      // Cualquier accion
+      //clients.openWindow('http://localhost:5000/');
+      notification.close();
+    } else {
+      notification.close();
+    }
+  });
+  
+  self.addEventListener('notificationclose', (event) => {//Cierra notificacion
+    console.log('Se cerro la notificacion');
+  });
