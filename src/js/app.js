@@ -4,6 +4,8 @@ let MODAL_POST;
 let BTN_SHOW_POST;
 let BTN_CANCEL_POST;
 let deferredPrompt;
+let TITLE;
+let DESCRIPTION;
 
 // Funciones______________________________________________________________________________________________________
 const showPostModal = () => {
@@ -17,6 +19,37 @@ const showPostModal = () => {
 const closePostModal = () => {
     MAIN.style.display = 'block';
     MODAL_POST.style.transform = 'translateY(100vh)';
+};
+const sendData = async (e) => {
+    try {
+        e.preventDefault();
+        TITLE = document.querySelector('#title').value;
+        DESCRIPTION = document.querySelector('#description').value;
+        if (TITLE && DESCRIPTION) {
+            await db.collection('posts').add({
+                title: TITLE,
+                description: DESCRIPTION,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            }); 
+            const data = {
+                message: 'Registro exitosamente almacenado',
+                timeout: 5000
+            };
+            Message().MaterialSnackbar.showSnackbar(data);
+        } else {
+            const data = {
+                message: 'Faltan campos por llenar',
+                timeout: 1500
+            };
+            Message('error').MaterialSnackbar.showSnackbar(data);
+        }
+    } catch (error) {
+        const data = {
+            message: error.message,
+            timeout: 1500
+        };
+        Message('error').MaterialSnackbar.showSnackbar(data);
+    }
 };
 //interrumpe modal de instalacion
 window.addEventListener('beforeinstallprompt', (e) => {
@@ -43,7 +76,20 @@ window.addEventListener('load', async () => {
             console.info('Service worker registrado');
         }
     }
-    //banerr install
+    //Toast Container.
+    window.Message = (option = 'success', container = document.querySelector('#toast-container')) => {
+        container.classList.remove('success');
+        container.classList.remove('error');
+        container.classList.add(option);
+        return container;
+    };
+    window.Loading = (option = 'block') => {
+        document.querySelector('#loading').style.display = option;
+    };
+    //Boton anviar post.
+    const btnPostSubmit = document.querySelector('#btn-post-submit');
+    btnPostSubmit.addEventListener('click', (e) => sendData(e));
+    //banerr install.
     const bannerInstall = document.querySelector('#banner-install');
     bannerInstall.addEventListener('click', async () => {
         if (deferredPrompt) {
